@@ -7,7 +7,7 @@ export type AsyncSingletonOption = {
   slice?: [number, number],
 };
 
-type QueueItem = { resolve: (val: any) => any, reject: (val: any) => any, args: any[] }
+type QueueItem = { resolve: (val: any) => any, reject: (val: any) => any, args: any[] };
 type Queue = QueueItem[];
 
 export default function singletonAsync<T extends (...args: any[]) => Promise<any>>(func: T, { trailing, slice }: AsyncSingletonOption = {}): T {
@@ -18,7 +18,7 @@ export default function singletonAsync<T extends (...args: any[]) => Promise<any
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
       // コンテキストを用意
-      let context = find(contexts, (v: any) => isEqual(slicer(args), slicer(v.args)));
+      let context = find(contexts, (v) => isEqual(slicer(args), slicer(v.args)));
       const running = context !== undefined;
       if (context === undefined) {
         context = { args, queue: [] };
@@ -26,14 +26,14 @@ export default function singletonAsync<T extends (...args: any[]) => Promise<any
       }
 
       if (running) return context.queue.push({ resolve, reject, args });
-      let result: any
-      let errorResult: any
+      let result: any;
+      let errorResult: any;
       try {
         result = await func.call(this, ...args);
         resolve(result);
       } catch (e) {
-        errorResult = e
-        reject(errorResult)
+        errorResult = e;
+        reject(errorResult);
       }
       if (context.queue.length > 0) {
         if (trailing) {
@@ -41,18 +41,18 @@ export default function singletonAsync<T extends (...args: any[]) => Promise<any
           try {
             result = await func.call(this, ...args);
           } catch (e) {
-            errorResult = e
+            errorResult = e;
           }
         }
         context.queue.forEach(({ resolve, reject }: QueueItem) => {
           if (errorResult) return reject(errorResult)
-          return resolve(result)
+          return resolve(result);
         });
         context.queue = [];
       }
 
       // コンテキストを削除
-      remove(contexts, (v: any) => isEqual(slicer(args), slicer(v.args)));
+      remove(contexts, (v) => isEqual(slicer(args), slicer(v.args)));
     });
   } as T;
 }
