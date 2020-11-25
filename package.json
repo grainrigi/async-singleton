@@ -1,6 +1,6 @@
 {
   "name": "@grainrigi/async-singleton",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "aggregate same async function calls",
   "main": "dist-cjs/index.js",
   "type": "dist-cjs/index.d.ts",
